@@ -2,6 +2,7 @@ trigger QLITriggerAfterUpdate on QuoteLineItem (after update) {
     QuotationHelper qh = new QuotationHelper();
     Double cantDisp, cantApartadaAfter, cantDispAfter;
     Inventario__c invUpdate = new Inventario__c();
+    List<Inventario__c> invList = new list<Inventario__c>();
     
     for(QuoteLineItem q : Trigger.New) {
         //Get Producto related to QuoteLineItem
@@ -17,7 +18,8 @@ trigger QLITriggerAfterUpdate on QuoteLineItem (after update) {
         //Update Cantidad_apart__c and Cantidad_dis__c fields in Inventory
         invUpdate.Cantidad_apart__c = cantApartadaAfter;
         invUpdate.Cantidad_dis__c = cantDispAfter;
+        invList.add(invUpdate);
     }
     
-    Update invUpdate;
+    Update invList;
 }
