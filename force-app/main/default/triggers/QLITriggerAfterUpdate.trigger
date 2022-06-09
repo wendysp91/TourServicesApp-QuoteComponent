@@ -1,25 +1,15 @@
 trigger QLITriggerAfterUpdate on QuoteLineItem (after update) {
-    QuotationHelper qh = new QuotationHelper();
-    Double cantDisp, cantApartadaAfter, cantDispAfter;
-    Inventario__c invUpdate = new Inventario__c();
-    List<Inventario__c> invList = new list<Inventario__c>();
-    
-    for(QuoteLineItem q : Trigger.New) {
-        //Get Producto related to QuoteLineItem
-        Product2 prod = [Select Id,ExternalId From Product2 Where Id =:q.Product2Id Limit 1];
-        //Get Inventory related to Product
-        Inventario__c inv = [Select Id,Cantidad_apart__c From Inventario__c  Where Product__c =:prod.Id Limit 1];
-    
-        //Get cantidad disponible trough searchProductByCode method
-        cantDisp = qh.searchProductByCode(prod.ExternalId);
-        //Update the numbers of cantidad apartada and cantidad disponible
-        cantApartadaAfter = q.Quantity + inv.Cantidad_apart__c;
-        cantDispAfter = cantDisp - cantApartadaAfter;
-        //Update Cantidad_apart__c and Cantidad_dis__c fields in Inventory
-        invUpdate.Cantidad_apart__c = cantApartadaAfter;
-        invUpdate.Cantidad_dis__c = cantDispAfter;
-        invList.add(invUpdate);
+    QuoteTriggerHandler qth = new QuoteTriggerHandler();
+    List<Id> pbe = new List<Id>();
+    for(QuoteLineItem qli:Trigger.New){
+        pbe.add(qli.Product2Id);
     }
     
-    Update invList;
+    List<Inventario__c> inv = [SELECT Id, Name, Product__c, Cantidad_dis__c, Cantidad_apart__c FROM Inventario__c WHERE Product__c IN:pbe];
+    
+    Map<String, Inventario__c> invMap = new Map<String, Inventario__c>();
+    for(Inventario__c inventItem : inv){
+        invMap.put(inventItem.Product__c,inventItem);
+    }
+    qth.updateQuantities(Trigger.new, Trigger.oldMap, invMap);
 }
