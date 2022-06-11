@@ -10,7 +10,7 @@ public class QuotationHelper implements QuotationSync{
 
     public List<Inventario__c> getAllInventario() {
         //Get all Inventories
-        return [SELECT Id,Name, Codigo_Prod__c, Cantidad_dis__c, Cantidad_apart__c FROM Inventario__c LIMIT 50];
+        return [SELECT Id,Name, Codigo_Prod__c, Cantidad_dis__c, Cantidad_apart__c FROM Inventario__c LIMIT 200];
     }
 
     public List<Product2> productsInInventory() {
@@ -42,6 +42,22 @@ public class QuotationHelper implements QuotationSync{
             return inventory.Cantidad_dis__c;
         } else {
             return 0;
+        }
+    }
+    @InvocableMethod(label='StockEmptyAlert')
+     public static void StockEmptyAlert(){
+        QuotationHelper qh = new QuotationHelper();
+        List<Inventario__c> prodInInventory = qh.getAllInventario();
+        List<FeedItem> feed = new List<FeedItem>();
+        
+        for(Inventario__c InventItem :prodInInventory){
+            if(InventItem.Cantidad_dis__c == 0){
+                //Post to chatter
+                FeedItem objPost = new FeedItem();
+	        	objPost.ParentId = UserInfo.getUserId();
+                objPost.Body = 'Producto sin Inventario';
+                feed.add(objPost);
+            }
         }
     }
 }
