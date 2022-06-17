@@ -2,20 +2,24 @@ public class QuotationHelper implements QuotationSync{
     
     public void initialConfig() {
         //Create 2 Accounts
-        List<Account> accounts = new List<Account>{new Account(Name='Compumundo'),
+        try{
+            List<Account> accounts = new List<Account>{new Account(Name='Compumundo'),
                                                     new Account(Name='Compuworld')};
-        insert accounts;   
+        	insert accounts;   
+        }catch(DmlException ex){
+            ex.getMessage();
+        }
     }
 
     public List<Inventario__c> getAllInventario() {
         //Get all Inventories
-        return [SELECT Id,Name, Codigo_Prod__c, Cantidad_dis__c, Cantidad_apart__c FROM Inventario__c LIMIT 200];
+        return [SELECT Id,Name, Codigo_Prod__c, Cantidad_dis__c, Cantidad_apart__c, Product__c FROM Inventario__c LIMIT 200];
     }
 
     public List<Product2> productsInInventory() {
         //Get all Inventories throw getAllInventario method
         List<Inventario__c> inventario = getAllInventario();
-        List<Product2> prodInInvent;
+        List<Product2> prodInInvent = new List<Product2>();
         //Get Product related to each Inventary record
         for (Inventario__c inv : inventario) {
             Product2 prod = [SELECT Id,Name FROM Product2 WHERE Id =:inv.Product__c];
@@ -38,7 +42,8 @@ public class QuotationHelper implements QuotationSync{
 
     public Product2 searchProductByCode(String prodCode) {       
         //Get products with the ProductCode receive by params
-        Product2 product = [SELECT Product2.Name, Product2.ExternalId, (SELECT PriceBookEntry.UnitPrice FROM PriceBookEntries), (SELECT Inventario__c.Cantidad_apart__c,Inventario__c.Cantidad_dis__c FROM Inventarios__r) FROM Product2 WHERE Product2.ProductCode =: prodCode];
+        //Product2 product = [SELECT Product2.Name, Product2.ExternalId, (SELECT PriceBookEntry.UnitPrice FROM PriceBookEntries), (SELECT Inventario__c.Cantidad_apart__c,Inventario__c.Cantidad_dis__c FROM Inventarios__r) FROM Product2 WHERE Product2.ProductCode =: prodCode];
+        Product2 product = [SELECT Product2.Name, Product2.ExternalId FROM Product2 WHERE Product2.ProductCode =: prodCode];
         return product;
        
     }
@@ -79,5 +84,6 @@ public class QuotationHelper implements QuotationSync{
                 feed.add(objPost);
             }
         }
+         insert feed;
     }
 }
