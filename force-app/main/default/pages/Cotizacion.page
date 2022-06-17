@@ -2,7 +2,7 @@
     <apex:pageBlock title="Sistema de Cotizacion">
         <apex:pageBlock title="Hola {!$User.FirstName}">
             <apex:form >
-                <apex:pageMessages ></apex:pageMessages>
+                <Apex:pagemessages id="message"></Apex:pagemessages>
                 <apex:outputLabel value="Codigo de producto: " />
                 <apex:inputText value="{!codigo}" />
                 <apex:commandButton value="Buscar" action="{!buscar}" />
@@ -12,10 +12,9 @@
                         <apex:column value="{!pbe.UnitPrice}" />
                         <apex:column value="{!inv.Cantidad_dis__c}" />
  						<apex:column headerValue="Cantidad a apartar">
-                            <apex:inputField value="{!inv.Cantidad_apart__c}"/>
+                            <apex:inputText value="{!quantity}"/>
                         </apex:column>
                         <apex:column value="{!inv.Product__r.ExternalId}" />
-                        
                     </apex:pageBlockTable>
                 </apex:pageBlock>
                 <apex:pageBlock >

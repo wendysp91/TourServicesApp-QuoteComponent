@@ -4,7 +4,6 @@ public class QuotationHelper implements QuotationSync{
         //Create 2 Accounts
         List<Account> accounts = new List<Account>{new Account(Name='Compumundo'),
                                                     new Account(Name='Compuworld')};
-
         insert accounts;   
     }
 
@@ -27,15 +26,17 @@ public class QuotationHelper implements QuotationSync{
     }
 
     public Boolean confirmProductExistByCode(String prodCode) {
-        
         //Get product with the ProductCode receive by params
-        Product2 product = [SELECT Id,Name FROM Product2 WHERE ProductCode =: prodCode];
+        List<Product2> products = [SELECT Id,Name FROM Product2 WHERE ProductCode =: prodCode];
         //Validate if exist 1 product
-        return product != null;
+        if(products.size() != 0){
+            return true;
+        }else{
+            return false;
+        }
     }
 
-    public Product2 searchProductByCode(String prodCode) {
-       
+    public Product2 searchProductByCode(String prodCode) {       
         //Get products with the ProductCode receive by params
         Product2 product = [SELECT Product2.Name, Product2.ExternalId, (SELECT PriceBookEntry.UnitPrice FROM PriceBookEntries), (SELECT Inventario__c.Cantidad_apart__c,Inventario__c.Cantidad_dis__c FROM Inventarios__r) FROM Product2 WHERE Product2.ProductCode =: prodCode];
         return product;
