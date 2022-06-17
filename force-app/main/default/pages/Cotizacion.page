@@ -1,0 +1,28 @@
+<apex:page standardController="Quote" extensions="QuoteController">
+    <apex:pageBlock title="Sistema de Cotizacion">
+        <apex:pageBlock title="Hola {!$User.FirstName}">
+            <apex:form >
+                <apex:pageMessages ></apex:pageMessages>
+                <apex:outputLabel value="Codigo de producto: " />
+                <apex:inputText value="{!codigo}" />
+                <apex:commandButton value="Buscar" action="{!buscar}" />
+                <apex:pageBlock title="Productos">
+                    <apex:pageBlockTable value="{!inv},{!pbe}" var="inv,pbe">
+                        <apex:column value="{!inv.Product__r.Name}" />
+                        <apex:column value="{!pbe.UnitPrice}" />
+                        <apex:column value="{!inv.Cantidad_dis__c}" />
+ 						<apex:column headerValue="Cantidad a apartar">
+                            <apex:inputField value="{!inv.Cantidad_apart__c}"/>
+                        </apex:column>
+                        <apex:column value="{!inv.Product__r.ExternalId}" />
+                        
+                    </apex:pageBlockTable>
+                </apex:pageBlock>
+                <apex:pageBlock >
+                    <apex:commandButton value="Atras" action="{!atras}" />
+                    <apex:commandButton value="Guardar" action="{!guardar}" />
+                </apex:pageBlock>
+            </apex:form>
+        </apex:pageBlock>
+    </apex:pageBlock>
+</apex:page>

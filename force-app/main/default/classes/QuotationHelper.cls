@@ -29,21 +29,40 @@ public class QuotationHelper implements QuotationSync{
     public Boolean confirmProductExistByCode(String prodCode) {
         
         //Get product with the ProductCode receive by params
-        Product2 product = [SELECT Id,Name FROM Product2 WHERE ExternalId =: prodCode];
+        Product2 product = [SELECT Id,Name FROM Product2 WHERE ProductCode =: prodCode];
         //Validate if exist 1 product
         return product != null;
     }
 
-    public Double searchProductByCode(String prodCode) {
+    public Product2 searchProductByCode(String prodCode) {
+       
+        //Get products with the ProductCode receive by params
+        Product2 product = [SELECT Product2.Name, Product2.ExternalId, (SELECT PriceBookEntry.UnitPrice FROM PriceBookEntries), (SELECT Inventario__c.Cantidad_apart__c,Inventario__c.Cantidad_dis__c FROM Inventarios__r) FROM Product2 WHERE Product2.ProductCode =: prodCode];
+        return product;
+       
+    }
+
+    public Double searchCantDisponibleByCode(String prodCode) {
         Boolean prodExist = confirmProductExistByCode(prodCode);
         if (prodExist) {
             //Get products in an inventory with the ProductCode receive by params
-            Inventario__c inventory = [SELECT Id,Name,Cantidad_dis__c FROM Inventario__c WHERE Product__r.ExternalId =: prodCode LIMIT 1];
+            Inventario__c inventory = [SELECT Id,Name,Cantidad_dis__c FROM Inventario__c WHERE Product__r.ProductCode =: prodCode LIMIT 1];
             return inventory.Cantidad_dis__c;
         } else {
             return 0;
         }
     }
+    public Double searchCantApartadaByCode(String prodCode) {
+        Boolean prodExist = confirmProductExistByCode(prodCode);
+        if (prodExist) {
+            //Get products in an inventory with the ProductCode receive by params
+            Inventario__c inventory = [SELECT Id,Name,Cantidad_apart__c FROM Inventario__c WHERE Product__r.ProductCode =: prodCode LIMIT 1];
+            return inventory.Cantidad_apart__c;
+        } else {
+            return 0;
+        }
+    }
+
     @InvocableMethod(label='StockEmptyAlert')
      public static void StockEmptyAlert(){
         QuotationHelper qh = new QuotationHelper();

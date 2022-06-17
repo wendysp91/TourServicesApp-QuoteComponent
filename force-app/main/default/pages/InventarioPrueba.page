@@ -1,0 +1,27 @@
+<apex:page standardController="Inventario__c" renderAs="pdf">
+    <!--Comentario en Visualforce-->
+    <apex:sectionHeader title="Contact edit" subtitle="Mi nueva pagina Visualforce"/>
+    <apex:form >
+        <apex:pageBlock >
+       		<apex:outputPanel >
+                La clase de Salesforce 2022 es la mejor<br />
+                La clase de Salesforce 2022 es la mejor<br />
+                Ultima Linea
+            </apex:outputPanel>
+        </apex:pageBlock>
+        <apex:pageBlock >
+            <apex:outputLabel >Esto es un label</apex:outputLabel>
+            <apex:inputField value="{!Inventario__c.Name}"/>
+           <apex:commandButton value="Presioname"/>
+    	</apex:pageBlock>
+    </apex:form>
+    <style>
+    .miEstilo{
+        color: red;
+        font-size: 18px;
+        font-family: Courier;
+        float: left;
+        width: 100%;
+        }
+    </style>
+</apex:page>
