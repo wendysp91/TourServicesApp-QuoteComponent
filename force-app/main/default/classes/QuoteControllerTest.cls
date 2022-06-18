@@ -1,7 +1,6 @@
-@IsTest
-public class QLITriggerTest {
-@IsTest
-    public static void TriggerTest(){
+public class QuoteControllerTest {
+/*@IsTest
+    public static void buscarTest(){
         Opportunity opp = new Opportunity();
         opp.Name='test';
         opp.CloseDate=Date.Today();
@@ -16,6 +15,7 @@ public class QLITriggerTest {
         
         Product2 pr = New Product2();
         pr.Name='test';
+        pr.ProductCode = 'codigo001';
         pr.IsActive=true;
         insert pr;
         Product2 producto = [SELECT Id, Name From Product2];
@@ -34,7 +34,6 @@ public class QLITriggerTest {
         qli.QuoteId=qta.id;
         qli.PricebookEntryId=pb.id;
         insert qli;
-        Double quantOld = qli.Quantity;
         
         Inventario__c inv = new Inventario__c();
         inv.Name = 'Inv01';
@@ -43,15 +42,15 @@ public class QLITriggerTest {
         inv.Cantidad_dis__c = 30;
         inv.Product__c = producto.Id;
         insert inv;
-        Inventario__c invBefore = [SELECT Id,Name,Cantidad_apart__c, Cantidad_dis__c FROM Inventario__c WHERE Product__c =: producto.Id];
-
-        qli.Quantity = 15;
+        
         Test.startTest();
-        update qli;
+        QuoteController qc = new QuoteController(Apexpages.StandardController controller);
+        qc.buscar();
         Test.stopTest();
-        Inventario__c invAfter = [SELECT Id,Name,Cantidad_apart__c, Cantidad_dis__c FROM Inventario__c WHERE Product__c =: producto.Id];
+        Inventario__c inventario = [SELECT Name,Cantidad_apart__c,Cantidad_dis__c, Product__r.Name, Product__r.ProductCode,Product__r.ExternalId  FROM Inventario__c WHERE Product__r.ProductCode ='codigo001'];
+        PriceBookEntry pbEntry = [SELECT UnitPrice FROM PriceBookEntry WHERE Product2.ProductCode = 'codigo001' LIMIT 1];
+        System.assertEquals('Inv01', inventario.Name, 'si coinciden');
+        System.assertEquals(20, pbEntry.UnitPrice, 'si coinciden');
 
-        System.assertEquals(invBefore.Cantidad_apart__c+qli.Quantity-quantOld, invAfter.Cantidad_apart__c, 'si coinciden');
-        System.assertEquals(invBefore.Cantidad_dis__c-qli.Quantity, invAfter.Cantidad_dis__c, 'si coinciden');
-    }
+    }*/
 }
