@@ -1,4 +1,8 @@
-public class InventoryDataScheduler{
+global class InventoryDataScheduler implements Schedulable{
+    global void execute(SchedulableContext sc)
+        {
+            ExternalLegacyConnection();
+        }
     //@future(callout=true)
     public static void ExternalLegacyConnection() {
         Http http = new Http();
