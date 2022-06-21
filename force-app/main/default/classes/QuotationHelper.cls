@@ -33,7 +33,7 @@ public class QuotationHelper implements QuotationSync{
         //Get product with the ProductCode receive by params
         List<Product2> products = [SELECT Id,Name FROM Product2 WHERE ProductCode =: prodCode];
         //Validate if exist 1 product
-        if(products.size() != 0){
+        if(products.size() > 0){
             return true;
         }else{
             return false;

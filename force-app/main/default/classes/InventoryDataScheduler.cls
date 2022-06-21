@@ -3,7 +3,7 @@ global class InventoryDataScheduler implements Schedulable{
         {
             ExternalLegacyConnection();
         }
-    //@future(callout=true)
+    @future(callout=true)
     public static void ExternalLegacyConnection() {
         Http http = new Http();
         HttpRequest request = new HttpRequest();

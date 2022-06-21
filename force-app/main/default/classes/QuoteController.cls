@@ -1,30 +1,28 @@
 public class QuoteController {
-    private final SObject parent;
-    public String codigo{get;set;}
-    public Product2 prod{get;set;}
-    public Inventario__c inv{get;set;}
-    public PriceBookEntry pbe{get;set;}
-    public Double cantDisp{get;set;}
-    public Double cantApart{get;set;}
-    public Double quantity{get;set;}
-    public String quoteId;
+    @AuraEnabled(Cacheable = true)
 
-    public QuoteController(Apexpages.StandardController controller) {
-        parent = controller.getRecord();
+    public static List<Inventario__c> buscar(String textkey){
+        textkey = '%' + textkey + '%';
+
+        List<Inventario__c> inv = [SELECT Id,Name,Cantidad_apart__c,Cantidad_dis__c,Product__r.Name, Product__r.ProductCode FROM Inventario__c WHERE Name LIKE :textkey];  
+        /*PriceBookEntry pbe = [SELECT UnitPrice FROM PriceBookEntry WHERE Product2.ProductCode  LIKE :textkey LIMIT 1];
+        Plantillalwc__c plantilla = new Plantillalwc__c();
+        Plantillalwc__c plantillalwc = new Plantillalwc__c();
+
+        plantilla.ProductName__c = inv.Product__r.Name;
+        plantilla.ProductCodigo__c = inv.Product__r.ProductCode;
+        plantilla.ProductUnitPrice__c = pbe.UnitPrice;
+        plantilla.InventarioCantDisp__c = inv.Cantidad_dis__c;
+        plantilla.InventarioCantApart__c = inv.Cantidad_apart__c;
+
+        insert plantilla;
+         
+        plantillalwc=[SELECT ProductName__c,ProductCodigo__c,ProductUnitPrice__c,InventarioCantDisp__c,InventarioCantApart__c FROM Plantillalwc__c WHERE ProductCodigo__c LIKE:textkey];
+       */
+        return inv;
+
     }
-    public void buscar(){
-        QuotationHelper qh = new QuotationHelper();
-        Boolean existe = qh.confirmProductExistByCode(codigo);
-        if(existe){
-            String query = 'SELECT Cantidad_apart__c,Cantidad_dis__c, Product__r.Name, Product__r.ProductCode,Product__r.ExternalId  FROM Inventario__c WHERE Product__r.ProductCode =: codigo';
-            inv = Database.query(query);
-            String pbeQuery = 'SELECT UnitPrice FROM PriceBookEntry WHERE Product2.ProductCode =: codigo LIMIT 1';
-            pbe = Database.query(pbeQuery);
-        }else{
-            ApexPages.addmessage(new ApexPages.message(ApexPages.severity.WARNING,'El codigo no existe'));
-        }  
-    }
-    public void guardar(){
+   /* public void guardar(){
         try{
             QuotationHelper qh = new QuotationHelper();
             prod = qh.searchProductByCode(codigo);
@@ -47,5 +45,5 @@ public class QuoteController {
         prod.clear();
         inv.clear();
         pbe.clear();
-    }
+    }*/
 }
