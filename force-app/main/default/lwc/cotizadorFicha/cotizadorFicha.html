@@ -1,0 +1,38 @@
+<template>
+    
+    <lightning-card title="Cotizador de productos v2">
+    
+        <lightning-layout multiple-rows="true" vertical-align="end">
+            <lightning-layout-item size="4" padding="around-small">
+                <lightning-input type="text" label="Introduzca el codigo del producto" 
+                value={code} 
+                onchange={handelSearchKeyCode}> 
+                </lightning-input>
+            </lightning-layout-item>
+
+            <lightning-layout-item size="2" padding="around-small">
+                <lightning-button label="Search" onclick={handelSearchCode} variant="brand"></lightning-button>
+            </lightning-layout-item>
+
+            <lightning-layout-item size="12" padding="around-small">
+                <lightning-card title="Product Details">
+                    <div class="slds-m-around_medium"  if:true={allData}>
+                        
+                        <p>Nombre del Producto: {inventory.Product__r_Name}</p>
+                        <p>Código del producto: {inventory.Product__r_ProductCode}</p>
+                        <p>Cantidad apartada: {inventory.Cantidad_apart__c}</p>
+                        <p>Cantidad disponible: {inventory.Cantidad_dis__c}</p>
+                        <p>Precio unitario: {priceBookEntry.UnitPrice}</p>
+                        <p>Nombre del inventario: {inventory.Name}</p>
+                        <p>Id del quote: {recordId}</p>
+                        <lightning-input type="number" name="quantity" label="Quantity" value={quantity} 
+                        onchange={handelQuantity} max={inventory.Cantidad_dis__c}></lightning-input>
+                        <lightning-layout-item size="2" padding="around-small">
+                            <lightning-button label="Save" onclick={saveHandler} variant="brand"></lightning-button>
+                        </lightning-layout-item>
+                    </div>
+                </lightning-card>
+            </lightning-layout-item>
+        </lightning-layout>
+    </lightning-card>
+</template>

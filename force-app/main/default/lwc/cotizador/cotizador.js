@@ -1,25 +1,35 @@
 import { LightningElement,track } from 'lwc';
-import buscar from '@salesforce/apex/QuoteController.buscar';
+/*import { reduceErrors } from 'c/ldsUtils';
+import search from '@salesforce/apex/QuoteController.search';
+import { refreshApex } from '@salesforce/apex';
+import { ShowToastEvent } from 'lightning/platformShowToastEvent';*/
 
 export default class Cotizador extends LightningElement {
-    searchKey;
+  /*  searchKey;
     @track inventory;
-    //This Funcation will get the value from Text Input.
+    errors;
+    draftValues;
+    _datatableresp;
+
+    //This Funcation will get the value from Code Input.
     handelSearchKey(event){
         this.searchKey = event.target.value;
     }
 
- //This funcation will fetch the Account Name on basis of searchkey
+    //This function will fetch the Inventory on basis of searchkey
     SearchInventoryHandler(){
         //call Apex method.
-        buscar({textkey: this.searchKey})
+        search(
+            {textkey: this.searchKey} )
         .then(result => {
                 let newV =JSON.parse(JSON.stringify(result));;
                 this.testFun(newV);
                 this.inventory = newV;
         })
         .catch( error=>{
-            this.inventory = null;
+           // this.inventory = null;
+           this.errors = reduceErrors(error); // code to execute if the promise is rejected
+            
         });
 
     };
@@ -55,11 +65,42 @@ export default class Cotizador extends LightningElement {
       }
 
     cols = [
-        { label: 'Nombre del inventario', fieldName: 'Name', type: 'text' },
-        { label: 'Cantidad disponible', fieldName: 'Cantidad_dis__c', type: 'number' },
-        { label: 'Cantidad apartada', fieldName: 'Cantidad_apart__c', type: 'number' },
         { label: 'Nombre del Producto', fieldName: 'Product__r_Name', type: 'text' },
-        { label: 'Codigo del producto', fieldName: 'Product__r_ProductCode', type: 'text' }
+        { label: 'Codigo del producto', fieldName: 'Product__r_ProductCode', type: 'text' },
+        { label: 'Cantidad a cotizar', type: 'number', editable: "true", fieldName: 'Cantidad_apart__c' },
+        { label: 'Cantidad disponible', fieldName: 'Cantidad_dis__c', type: 'number' },
+        { label: 'Nombre del inventario', fieldName: 'Name', type: 'text' }
+        
     ];
 
+    //This function will save the QLI 
+    handleSave(event){
+        this.draftValues = event.detail.draftValues;
+        alert('draf '+JSON.stringify(this.draftValues))
+         save({qli: this.draftValues, textkey: this.searchKey})
+         .then( result => {
+            console.log( JSON.stringify( "Apex update result: " + result ) )
+            if(result === true){
+                this.dispatchEvent(
+                    new ShowToastEvent({
+                        title: 'Success!!',
+                        message: 'successfully QLI has been updated',
+                        variant: 'success'
+                    })
+
+                );
+                this.draftValues = []
+                return refreshApex(this._datatableresp);
+            } else {
+                this.dispatchEvent(
+                    new ShowToastEvent({
+                        title: 'Error!!',
+                        message: 'something went wrong please try again',
+                        variant: 'error'
+                    })
+                );
+            }
+
+         })
+    }*/
 }

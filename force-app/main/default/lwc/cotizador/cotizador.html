@@ -1,5 +1,9 @@
 <template>
+    
     <lightning-card title="Cotizador de productos">
+        <template if:true={errors}>
+            {errors}
+        </template>
         <lightning-layout multiple-rows="true" vertical-align="end">
             <lightning-layout-item size="4" padding="around-small">
                 <lightning-input type="text" label="Introduzca el codigo del producto" 
@@ -9,13 +13,21 @@
             </lightning-layout-item>
 
             <lightning-layout-item size="2" padding="around-small">
-                <lightning-button label="Buscar" onclick={SearchInventoryHandler} variant="brand"></lightning-button>
+                <lightning-button label="Search" onclick={SearchInventoryHandler} variant="brand"></lightning-button>
             </lightning-layout-item>
 
             <lightning-layout-item size="12" padding="around-small">
-                <lightning-datatable key-field="id" data={inventory} columns ={cols}> 
-
+                <lightning-datatable 
+                key-field="id" 
+                data={inventory} 
+                columns ={cols}
+                hide-checkbox-column="true"
+                show-row-number-column="false"
+                draft-values={draftValues}
+                onsave={handleSave}> 
+                    
                 </lightning-datatable>
+                
             </lightning-layout-item>
         </lightning-layout>
     </lightning-card>

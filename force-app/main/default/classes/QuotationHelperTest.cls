@@ -3,8 +3,7 @@ public class QuotationHelperTest {
 	@IsTest
     public static void initialConfigTest(){
         Test.startTest();
-        QuotationHelper qh = new QuotationHelper();
-        qh.initialConfig();
+        QuotationHelper.initialConfig();
         Test.stopTest();
         Account account1 = [SELECT Name FROM Account WHERE Name = 'Compumundo'];
         Account account2 = [SELECT Name FROM Account WHERE Name = 'Compuworld'];
@@ -28,8 +27,7 @@ public class QuotationHelperTest {
         }
         insert inventarios;
         Test.startTest();
-        QuotationHelper qh = new QuotationHelper();
-        List<Inventario__c> real = qh.getAllInventario();
+        List<Inventario__c> real = QuotationHelper.getAllInventario();
         Test.stopTest();
         
         System.assertEquals(10, real.size(), 'si coinciden');
@@ -56,8 +54,7 @@ public class QuotationHelperTest {
         insert inv;
         
         Test.startTest();
-        QuotationHelper qh = new QuotationHelper();
-        List<Product2> real = qh.productsInInventory();
+        List<Product2> real = QuotationHelper.productsInInventory();
         Test.stopTest();
         
         System.assertEquals(1, real.size(), 'si coinciden');
@@ -71,9 +68,8 @@ public class QuotationHelperTest {
         insert element;
         
         Test.startTest();
-        QuotationHelper qh = new QuotationHelper();
-        Boolean existe = qh.confirmProductExistByCode('code01');
-        Boolean noExiste = qh.confirmProductExistByCode('code02');
+        Boolean existe = QuotationHelper.confirmProductExistByCode('code01');
+        Boolean noExiste = QuotationHelper.confirmProductExistByCode('code02');
         Test.stopTest();
         
         System.assertEquals(true, existe, 'si coinciden');
@@ -88,8 +84,7 @@ public class QuotationHelperTest {
         Product2 producto = [SELECT Product2.Name, Product2.ExternalId FROM Product2 WHERE Product2.ProductCode = 'code01'];
         
         Test.startTest();
-        QuotationHelper qh = new QuotationHelper();
-        Product2 real = qh.searchProductByCode('code01');
+        Product2 real = QuotationHelper.searchProductByCode('code01');
         Test.stopTest();
         System.assertEquals(producto, real, 'si coinciden');
     }
@@ -111,9 +106,8 @@ public class QuotationHelperTest {
         Inventario__c inventario = [SELECT Id,Name,Cantidad_dis__c FROM Inventario__c WHERE Product__r.ProductCode = 'code01'];
         
         Test.startTest();
-        QuotationHelper qh = new QuotationHelper();
-        Double real = qh.searchCantDisponibleByCode('code01');
-        Double noExiste = qh.searchCantDisponibleByCode('code02');
+        Double real = QuotationHelper.searchCantDisponibleByCode('code01');
+        Double noExiste = QuotationHelper.searchCantDisponibleByCode('code02');
         Test.stopTest();
         System.assertEquals(inventario.Cantidad_dis__c, real, 'si coinciden');
         System.assertEquals(0, noExiste, 'si coinciden');
@@ -136,9 +130,8 @@ public class QuotationHelperTest {
         Inventario__c inventario = [SELECT Id,Name,Cantidad_apart__c FROM Inventario__c WHERE Product__r.ProductCode = 'code01'];
         
         Test.startTest();
-        QuotationHelper qh = new QuotationHelper();
-        Double real = qh.searchCantApartadaByCode('code01');
-        Double noExiste = qh.searchCantApartadaByCode('code02');
+        Double real = QuotationHelper.searchCantApartadaByCode('code01');
+        Double noExiste = QuotationHelper.searchCantApartadaByCode('code02');
         Test.stopTest();
         System.assertEquals(inventario.Cantidad_apart__c, real, 'si coinciden');
         System.assertEquals(0, noExiste, 'si coinciden');
