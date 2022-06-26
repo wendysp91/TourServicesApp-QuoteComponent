@@ -9,8 +9,6 @@ public class QuoteController {
         } else {
             throw new AuraHandledException('Lo siento, el código del producto no se encuentra registrado');
         }
-        /*PriceBookEntry pbe = [SELECT UnitPrice FROM PriceBookEntry WHERE Product2.ProductCode  LIKE :textkey LIMIT 1];
-           */
     }
     public static Product2 product(String code){
         code = '%' + code + '%';
@@ -20,23 +18,21 @@ public class QuoteController {
         } else {
             throw new AuraHandledException('Lo siento, el código del producto no se encuentra registrado');
         }
-        /*PriceBookEntry pbe = [SELECT UnitPrice FROM PriceBookEntry WHERE Product2.ProductCode  LIKE :textkey LIMIT 1];
-           */
     }
     @AuraEnabled
-    public static boolean save( Double quantity, String code, String recordId){
+    public static Boolean save( Double quantity, String code, String recordId){
         try {
-            Product2 prod = QuoteController.product(code);
+            Product2 prod = QuotationHelper.searchProductByCode(code);
             PriceBookEntry pbe = [SELECT Id,UnitPrice FROM PriceBookEntry WHERE Product2.ProductCode LIKE :code LIMIT 1];
             QuoteLineItem newQli = new QuoteLineItem(Product2Id = prod.Id, 
                                                      QuoteId = recordId, 
                                                      pricebookentryId = pbe.Id, 
                                                      Quantity = quantity, 
                                                      UnitPrice = pbe.UnitPrice);
-            insert newQli;
+            insert newQli; 
             return true;
         } catch(Exception e) {
-            return false;
+           return false;
         }
     }
 }

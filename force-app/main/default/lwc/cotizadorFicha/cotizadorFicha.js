@@ -1,23 +1,19 @@
 import { LightningElement,wire, api } from 'lwc';
 import { reduceErrors } from 'c/ldsUtils';
-/*import { refreshApex } from '@salesforce/apex';*/
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
-
+import { getRecordNotifyChange } from 'lightning/uiRecordApi';
 
 import searchPBE from '@salesforce/apex/QuotationHelper.searchPBE';
 import search from '@salesforce/apex/QuoteController.search';
+import searchProductByCode from '@salesforce/apex/QuotationHelper.searchProductByCode';
 import save from '@salesforce/apex/QuoteController.save';
-import QLI_QUANTITY from '@salesforce/schema/QuoteLineItem.Quantity';
-
-
 export default class CotizadorFicha extends LightningElement {
-    inventory;
     code;
+    inventory;
     priceBookEntry;
+    product;
     quantity;
     @api recordId;
-
-    selectedFields=[QLI_QUANTITY];
 
     handelSearchKeyCode(event){
         this.code = event.target.value;
@@ -28,7 +24,7 @@ export default class CotizadorFicha extends LightningElement {
         search(
             {textkey: this.code} )
         .then(result => {
-                let responseValue =JSON.parse(JSON.stringify(result));;
+                let responseValue =JSON.parse(JSON.stringify(result));
                 this.parseResponse(responseValue);
                 if(responseValue.length > 0){
                     this.inventory = responseValue[0];
@@ -51,7 +47,7 @@ export default class CotizadorFicha extends LightningElement {
         searchPBE({prodCode: this.code})
         .then(result => {
                 let responseValue =JSON.parse(JSON.stringify(result));;
-                this.parseResponse(responseValue);
+                // this.parseResponse(responseValue);
                 if(responseValue.length > 0){
                     this.priceBookEntry = responseValue[0];
                 }else{
@@ -59,7 +55,7 @@ export default class CotizadorFicha extends LightningElement {
                     this.dispatchEvent(
                         new ShowToastEvent({
                             title: 'Error!!',
-                            message: 'El producto no tiene precio unitario asignado',
+                            message: 'Lo siento, el código del producto no se encuentra registrado',
                             variant: 'error'
                         })
                     );
@@ -67,6 +63,27 @@ export default class CotizadorFicha extends LightningElement {
         })
         .catch( error=>{
             this.priceBookEntry = null;
+            this.errors = reduceErrors(error); // code to execute if the promise is rejected
+         });
+         searchProductByCode({prodCode: this.code})
+        .then(result => {
+                let responseValue =JSON.parse(JSON.stringify(result));;
+                // this.parseResponse(responseValue);
+                if(responseValue != null){
+                    this.product = responseValue;
+                }else{
+                    this.product = null;
+                    this.dispatchEvent(
+                        new ShowToastEvent({
+                            title: 'Error!!',
+                            message: 'Lo siento, el código del producto no se encuentra registrado',
+                            variant: 'error'
+                        })
+                    );
+                }
+        })
+        .catch( error=>{
+            this.product = null;
             this.errors = reduceErrors(error); // code to execute if the promise is rejected
          });
     };
@@ -99,23 +116,12 @@ export default class CotizadorFicha extends LightningElement {
         }
     }
 
-    get allData(){
-        return this.inventory != null && this.priceBookEntry != null;
-    }
-
     handelQuantity(event){
         this.quantity = event.detail.value;    
     }
     saveHandler(){
-        this.dispatchEvent(
-            new ShowToastEvent({
-                title: 'Exito!!',
-                message: 'Se ha creado una cotización exitosamente!',
-                variant: 'success'
-            })
-        );
-         save({quantity: this.quantity, code: this.code, recordId: this.recordId})
-         .then( result => {
+        save({quantity: this.quantity, code: this.code, recordId: this.recordId})
+        .then( result => {
             console.log( JSON.stringify( "Apex update result: " + result ) )
             if(result === true){
                 this.dispatchEvent(
@@ -124,8 +130,9 @@ export default class CotizadorFicha extends LightningElement {
                         message: 'Se ha creado una cotización exitosamente!',
                         variant: 'success'
                     })
-                );
-                
+                ); 
+                eval("$A.get('e.force:refreshView').fire();");
+                this.cancelHndler();
             } else {
                 this.dispatchEvent(
                     new ShowToastEvent({
@@ -135,17 +142,44 @@ export default class CotizadorFicha extends LightningElement {
                     })
                 );
             }
-
          })
-         .catch( error=>{
+        .catch( error=>{
             this.dispatchEvent(
                 new ShowToastEvent({
                     title: 'Error!!',
-                    message: 'No se pudo crear la cotizacion, revise que los datos sean correctos',
+                    message: error.body.message,
                     variant: 'error'
                 })
             );
-         });
+        });
+         
+    }
+    get allData(){
+        return this.inventory != null && this.priceBookEntry != null && this.product != null;
+    }
+    get isInventoryReady(){
+        return this.inventory != null;
+    }
+
+    get isPriceBookReady(){
+        return this.priceBookEntry != null;
+    }
+    get isProductReady(){
+        return this.product != null;
+    }
+    cancelHndler(){
+        this.inventory = null;
+        this.product = null;
+        this.inventory = null;
+        this.priceBookEntry = null;
+        this.quantity = null;
+        this.template.querySelectorAll('lightning-layout-item').forEach(element => {
+              element.value = null;
+          });
+          this.template.querySelectorAll('lightning-input').forEach(element => {
+            element.value = null;
+        });
+        this.template.querySelector('lightning-input[data-id="quant"]').value = null;
     }
 }
 

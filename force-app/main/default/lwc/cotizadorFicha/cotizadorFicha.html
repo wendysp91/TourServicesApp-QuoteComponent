@@ -1,12 +1,9 @@
 <template>
-    
-    <lightning-card title="Cotizador de productos v2">
-    
+    <lightning-card title="Cotizador de productos">
         <lightning-layout multiple-rows="true" vertical-align="end">
-            <lightning-layout-item size="4" padding="around-small">
-                <lightning-input type="text" label="Introduzca el codigo del producto" 
-                value={code} 
-                onchange={handelSearchKeyCode}> 
+            <lightning-layout-item size="9" padding="around-small">
+                <lightning-input type="search" label="Introduzca el codigo del producto" value={code}
+                    onchange={handelSearchKeyCode}>
                 </lightning-input>
             </lightning-layout-item>
 
@@ -14,10 +11,9 @@
                 <lightning-button label="Search" onclick={handelSearchCode} variant="brand"></lightning-button>
             </lightning-layout-item>
 
-            <lightning-layout-item size="12" padding="around-small">
-                <lightning-card title="Product Details">
-                    <div class="slds-m-around_medium"  if:true={allData}>
-                        
+            <lightning-layout-item size="12" padding="around-small" if:true={allData}>
+                
+                    <!-- <div class="slds-m-around_medium"  if:true={allData}>   
                         <p>Nombre del Producto: {inventory.Product__r_Name}</p>
                         <p>Código del producto: {inventory.Product__r_ProductCode}</p>
                         <p>Cantidad apartada: {inventory.Cantidad_apart__c}</p>
@@ -26,13 +22,68 @@
                         <p>Nombre del inventario: {inventory.Name}</p>
                         <p>Id del quote: {recordId}</p>
                         <lightning-input type="number" name="quantity" label="Quantity" value={quantity} 
-                        onchange={handelQuantity} max={inventory.Cantidad_dis__c}></lightning-input>
+                        onchange={handelQuantity}></lightning-input>
+
+                       
                         <lightning-layout-item size="2" padding="around-small">
                             <lightning-button label="Save" onclick={saveHandler} variant="brand"></lightning-button>
                         </lightning-layout-item>
-                    </div>
-                </lightning-card>
+                    </div> -->
+                    <!-- record-id={priceBookEntry.Id} -->
+
+                    <lightning-record-view-form object-api-name="Product2" record-id={product.Id}
+                    if:true={allData}>
+                        <div class="slds-box slds-theme_default">
+                            <lightning-output-field field-name="Name"> </lightning-output-field>
+                        </div>
+                    </lightning-record-view-form>
+
+
+                    <lightning-record-view-form object-api-name="PriceBookEntry" record-id={priceBookEntry.Id}
+                    if:true={allData}>
+                        <div class="slds-box slds-theme_default">
+                            <!-- <lightning-output-field field-name="UnitPrice"> </lightning-output-field>
+                            <lightning-output-field field-name="ProductCode"> </lightning-output-field> -->
+                            <span class="slds-form-element__label">Unit price</span>
+                            <div class="slds-form-element__control">
+                                <!-- <lightning-formatted-text lightning-outputfield_outputfield="" class="slds-form-element__static"> -->
+                                   <div class="slds-form-element__static">
+                                    {priceBookEntry.UnitPrice}
+                                   </div>
+                                <!-- </lightning-formatted-text> -->
+                                <slot>
+
+                                </slot>
+                            </div>
+                            <!-- <p>Id del quote: {priceBookEntry.Id}</p>
+
+                            <p>Id del quote: </p> -->
+                        </div>
+                    </lightning-record-view-form>
+
+                    <lightning-record-view-form record-id={inventory.Id} object-api-name="Inventario__c"
+                    if:true={allData}>
+                        <div class="slds-box slds-theme_default">
+                            <lightning-output-field field-name="Name"> </lightning-output-field>
+                            <lightning-output-field field-name="Cantidad_apart__c"> </lightning-output-field>
+                            <lightning-output-field field-name="Cantidad_dis__c"> </lightning-output-field>
+                        </div>
+                    </lightning-record-view-form>
+
             </lightning-layout-item>
+            
+                <lightning-layout-item size="7" padding="around-small" if:true={allData}>
+                    <lightning-input type="number" name="quantity" data-id="quant" label="Cantidad a cotizar" value={quantity} 
+                    onchange={handelQuantity}></lightning-input>
+                </lightning-layout-item>
+
+                <lightning-layout-item size="2" padding="around-small" if:true={allData}>
+                    <lightning-button label="Save" onclick={saveHandler} variant="brand"></lightning-button>
+                </lightning-layout-item>
+                <lightning-layout-item size="2" padding="around-small" if:true={allData}>
+                    <lightning-button type="cancel" label="Cancel" onclick={cancelHndler}></lightning-button>
+                </lightning-layout-item>
+           
         </lightning-layout>
     </lightning-card>
 </template>

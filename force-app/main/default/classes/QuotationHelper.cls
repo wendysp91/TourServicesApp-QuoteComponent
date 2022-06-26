@@ -46,19 +46,22 @@ public class QuotationHelper implements QuotationSync{
         List<PricebookEntry> pbe = new List<PricebookEntry>();
         if (prodExist) {
             //Get products in an inventory with the ProductCode receive by params
-            pbe = [SELECT Id,UnitPrice FROM PricebookEntry WHERE Product2.ProductCode =: prodCode LIMIT 1];
+            pbe = [SELECT Id,UnitPrice, ProductCode FROM PricebookEntry WHERE Product2.ProductCode =: prodCode LIMIT 1];
             return pbe;
         } else {
             return pbe;
         }
     }
 
+    @AuraEnabled(Cacheable = true)
     public static Product2 searchProductByCode(String prodCode) {       
         //Get products with the ProductCode receive by params
-        //Product2 product = [SELECT Product2.Name, Product2.ExternalId, (SELECT PriceBookEntry.UnitPrice FROM PriceBookEntries), (SELECT Inventario__c.Cantidad_apart__c,Inventario__c.Cantidad_dis__c FROM Inventarios__r) FROM Product2 WHERE Product2.ProductCode =: prodCode];
-        Product2 product = [SELECT Product2.Name, Product2.ExternalId FROM Product2 WHERE Product2.ProductCode =: prodCode];
-        return product;
-       
+        Product2 prod = [SELECT Id,Name,ProductCode FROM Product2 WHERE ProductCode LIKE :prodCode]; 
+        if (prod!=null) { 
+            return prod;
+        } else {
+            throw new AuraHandledException('Lo siento, el código del producto no se encuentra registrado');
+        }
     }
 
     public static Double searchCantDisponibleByCode(String prodCode) {

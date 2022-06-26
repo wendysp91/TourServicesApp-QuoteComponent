@@ -1,4 +1,4 @@
-trigger QLITriggerAfterUpdate on QuoteLineItem (before update) {
+trigger QLITriggerAfterUpdate on QuoteLineItem (before insert, before update) {
     QuoteTriggerHandler qth = new QuoteTriggerHandler();
     List<Id> pbe = new List<Id>();
     
@@ -14,5 +14,10 @@ trigger QLITriggerAfterUpdate on QuoteLineItem (before update) {
         invMap.put(inventItem.Product__c,inventItem);
     }
     //call handler class 
-    qth.updateQuantities(Trigger.new, Trigger.oldMap, invMap);
+    if (Trigger.isInsert) {
+        qth.insertQuantities(Trigger.new, invMap);
+    } else {
+        qth.updateQuantities(Trigger.new, Trigger.oldMap, invMap);
+    }
+    
 }
