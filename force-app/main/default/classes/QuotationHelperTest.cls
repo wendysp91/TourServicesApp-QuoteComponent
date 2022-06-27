@@ -11,6 +11,7 @@ public class QuotationHelperTest {
         System.assertEquals('Compumundo', account1.Name, 'si coinciden');
         System.assertEquals('Compuworld', account2.Name, 'si coinciden');
     }
+    
     @IsTest
     public static void getAllInventarioTest(){
         List<Inventario__c> inventarios = new List<Inventario__c>();
@@ -76,12 +77,39 @@ public class QuotationHelperTest {
         System.assertEquals(false, noExiste, 'si coinciden');
     }
     @IsTest
+    public static void searchPBETest(){
+        Product2 pr = New Product2();
+        pr.Name='test';
+        pr.IsActive=true;
+        pr.ProductCode ='code01';
+        insert pr;
+        Product2 producto = [SELECT Id, Name From Product2];
+      
+        PricebookEntry pb = new PricebookEntry();
+        pb.Product2Id = pr.Id;
+        pb.PriceBook2Id = Test.getStandardPricebookId();
+        pb.UnitPrice = 21;
+        pb.UseStandardPrice = false;
+        pb.isActive=true;
+        insert pb; 
+        
+        List<PriceBookEntry> noexiste = new List<PriceBookEntry>();
+        List<PriceBookEntry> pbetest = [SELECT Id,UnitPrice, ProductCode FROM PricebookEntry WHERE Product2.ProductCode = 'code01'];
+        Test.startTest();
+        List<PriceBookEntry> pbe = QuotationHelper.searchPBE('code01');
+        List<PriceBookEntry> nopbe = QuotationHelper.searchPBE('code02');
+        Test.stopTest();
+        
+        System.assertEquals(pbe, pbetest, 'si coinciden');
+        System.assertEquals(nopbe, noexiste, 'si coinciden');
+    }
+    @IsTest
     public static void searchProductByCodeTest(){
         Product2 element = new Product2();
         element.Name = 'Prod01';
         element.ProductCode ='code01';
         insert element;
-        Product2 producto = [SELECT Product2.Name, Product2.ExternalId FROM Product2 WHERE Product2.ProductCode = 'code01'];
+        Product2 producto = [SELECT Product2.ExternalId, Product2.Name, Product2.ProductCode FROM Product2 WHERE Product2.ProductCode = 'code01'];
         
         Test.startTest();
         Product2 real = QuotationHelper.searchProductByCode('code01');

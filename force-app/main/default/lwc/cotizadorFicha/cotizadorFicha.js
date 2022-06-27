@@ -182,6 +182,3 @@ export default class CotizadorFicha extends LightningElement {
         this.template.querySelector('lightning-input[data-id="quant"]').value = null;
     }
 }
-
-
-   

@@ -9,5 +9,6 @@ public class InventarioResponse_Test {
 		String json = '{\"statusCode\":200,\"body\":{\"Inventory\":[{\"name\":\"CL1010_Inv\",\"ProductID\":\"CL1010\",\"Quan\":2988,\"BlockedQuan\":90},{\"name\":\"MC1020_Inv\",\"ProductID\":\"MC1020\",\"Quan\":2595,\"BlockedQuan\":49},{\"name\":\"DLL1030_Inv\",\"ProductID\":\"DLL1030\",\"Quan\":6235,\"BlockedQuan\":64}]}}';
 		InventarioResponse obj = InventarioResponse.parse(json);
 		System.assert(obj != null);
+        System.assertEquals(3, obj.body.Inventory.size(), 'Inventarios size coinciden');
 	}
 }

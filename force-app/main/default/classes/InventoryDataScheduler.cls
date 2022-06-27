@@ -1,8 +1,4 @@
-global class InventoryDataScheduler implements Schedulable{
-    global void execute(SchedulableContext sc)
-        {
-            ExternalLegacyConnection();
-        }
+global class InventoryDataScheduler{
     @future(callout=true)
     public static void ExternalLegacyConnection() {
         Http http = new Http();
@@ -12,7 +8,8 @@ global class InventoryDataScheduler implements Schedulable{
         HttpResponse response = http.send(request);
         List<Inventory> inventories = new List<Inventory>();
         inventories = InventarioResponse.parse(response.getBody()).body.Inventory;
-        system.debug(inventories.get(0));
+        
+        system.debug(inventories.size());
         List<Inventario__c> inventarios = new List<Inventario__c>();
         for(Inventory item : inventories){
             Inventario__c inv = new Inventario__c();

@@ -1,5 +1,5 @@
 public class QuotationHelper implements QuotationSync{
-    
+
     public static void initialConfig() {
         //Create 2 Accounts
         try{
@@ -50,6 +50,7 @@ public class QuotationHelper implements QuotationSync{
             return pbe;
         } else {
             return pbe;
+            
         }
     }
 

@@ -1,20 +1,11 @@
 public class QuoteController {
-
     @AuraEnabled(Cacheable = true)
     public static List<Inventario__c> search(String textkey){
         textkey = '%' + textkey + '%';
-        List<Inventario__c> inv = [SELECT Id,Name,Cantidad_apart__c,Cantidad_dis__c,Product__r.Name, Product__r.ProductCode FROM Inventario__c WHERE Product__r.ProductCode LIKE :textkey]; 
+        List<Inventario__c> inv = new List<Inventario__c>();
+        inv = [SELECT Id,Name,Cantidad_apart__c,Cantidad_dis__c,Product__r.Name, Product__r.ProductCode FROM Inventario__c WHERE Product__r.ProductCode LIKE :textkey]; 
         if (inv.size()>0) { 
             return inv;
-        } else {
-            throw new AuraHandledException('Lo siento, el código del producto no se encuentra registrado');
-        }
-    }
-    public static Product2 product(String code){
-        code = '%' + code + '%';
-        Product2 prod = [SELECT Id,Name,ProductCode FROM Product2 WHERE ProductCode LIKE :code]; 
-        if (prod!=null) { 
-            return prod;
         } else {
             throw new AuraHandledException('Lo siento, el código del producto no se encuentra registrado');
         }

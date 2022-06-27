@@ -4,6 +4,7 @@ public class QuoteTriggerHandler {
        double cantDispUpdated, cantApartUpdated;   
         List<Inventario__c> invUpdated = new List<Inventario__c>();
         QuoteLineItem qliOldItem = new QuoteLineItem();
+        
         //Por cada QuoteLineItem get the Inventory and update cantDisp and cantApart fields
         for(QuoteLineItem qlItem :quoteLineItems){
             //get inventories with Product id = QLIn id
@@ -15,9 +16,11 @@ public class QuoteTriggerHandler {
             if (qlItem.Quantity - oldQuantity > currentInventario.Cantidad_dis__c) {
                 qlItem.addError('La cantidad en la cotizacion debe ser menor que la cantidad disponible en inventario');
             } else {
-            //calculate cantDip and cantApart in inventory    
+            //calculate cantDip and cantApart in inventory 
+               
             cantApartUpdated = qlItem.Quantity - oldQuantity + currentInventario.Cantidad_apart__c;
             cantDispUpdated = currentInventario.Cantidad_dis__c - (qlItem.Quantity - oldQuantity);
+            
             //update both fields
             currentInventario.Cantidad_apart__c = cantApartUpdated;
             currentInventario.Cantidad_dis__c = cantDispUpdated;
@@ -29,12 +32,13 @@ public class QuoteTriggerHandler {
     }
 
     public void insertQuantities(List<QuoteLineItem> quoteLineItems, Map<String, Inventario__c> inventarios){  
-        double cantDispUpdated, cantApartUpdated;   
+        double cantDispUpdated, cantApartUpdated;
+        Inventario__c currentInventario = new Inventario__c();
          List<Inventario__c> invUpdated = new List<Inventario__c>();
          //Por cada QuoteLineItem get the Inventory and update cantDisp and cantApart fields
          for(QuoteLineItem qlItem :quoteLineItems){
              //get inventories with Product id = QLIn id
-            Inventario__c currentInventario = inventarios.get(qlItem.Product2Id);
+            currentInventario = inventarios.get(qlItem.Product2Id);
             if (qlItem.Quantity > currentInventario.Cantidad_dis__c) {
                 qlItem.addError('La cantidad en la cotizacion debe ser menor que la cantidad disponible en inventario');
             } else {
