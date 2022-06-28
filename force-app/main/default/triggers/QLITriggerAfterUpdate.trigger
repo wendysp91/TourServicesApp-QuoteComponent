@@ -7,7 +7,9 @@ trigger QLITriggerAfterUpdate on QuoteLineItem (before insert, before update) {
         pbe.add(qli.Product2Id);
     }
     //retrieve all products with id in inventory
-    List<Inventario__c> inv = [SELECT Id, Name, Product__c, Cantidad_dis__c, Cantidad_apart__c FROM Inventario__c WHERE Product__c IN:pbe];
+    List<Inventario__c> inv = [SELECT Id, Name, Product__c, Cantidad_dis__c, Cantidad_apart__c 
+                                FROM Inventario__c 
+                                WHERE Product__c IN:pbe];
     //create a map to relate Product id with inventario record
     Map<String, Inventario__c> invMap = new Map<String, Inventario__c>();
     for(Inventario__c inventItem : inv){
@@ -19,5 +21,4 @@ trigger QLITriggerAfterUpdate on QuoteLineItem (before insert, before update) {
     } else {
         qth.updateQuantities(Trigger.new, Trigger.oldMap, invMap);
     }
-    
 }

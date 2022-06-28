@@ -1,5 +1,7 @@
 public class QuoteTriggerHandler {
-    public void updateQuantities(List<QuoteLineItem> quoteLineItems, Map<Id, QuoteLineItem> qliOldItems, Map<String, Inventario__c> inventarios){
+    public void updateQuantities(List<QuoteLineItem> quoteLineItems,
+                                 Map<Id, QuoteLineItem> qliOldItems, 
+                                 Map<String, Inventario__c> inventarios){
         
        double cantDispUpdated, cantApartUpdated;   
         List<Inventario__c> invUpdated = new List<Inventario__c>();
